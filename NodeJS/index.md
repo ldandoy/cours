@@ -422,6 +422,8 @@ app.listen(port, () => {
 })
 ```
 
+[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/todos.jpg)
+
 En suite, nous allons nous occuper de la route /todos/1, qui va nous renvoyer la todo correspondant à l'id que l'on a demander, ici l'id sera égale à 1.
 
 ```Javascript
@@ -466,6 +468,8 @@ app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
 ```
+
+[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/todo1.jpg)
 
 #### POST request
 
@@ -523,6 +527,8 @@ app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
 ```
+
+[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/post_todo.jpg)
 
 #### PUT request
 
@@ -593,6 +599,8 @@ app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
 ```
+
+[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/put_todo.jpg)
 
 #### DELETE request
 
@@ -669,6 +677,8 @@ app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
 ```
+
+[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/delete_todo.jpg)
 
 ### Les modules Cors et Helmet
 
@@ -905,7 +915,250 @@ MONGO_URL =
 
 La première étape est de vous rendre sur [https://cloud.mongodb.com/](https://cloud.mongodb.com/)
 
-[]()
+
+
+Une fois tout configurer, il ne reste plus qu'a vous connecter.
+
+Copier  l'url de connection, dans le .env, puis modifier le mot de passe et le nom de la base de données.
+
+Maintenant, il faut ajouter un module qui va permettre de prendre en compte ce .env. c'est dotenv qu'il faut installer.
+
+```bash
+ldandoy@host ~/cours-nodejs 
+$ npm i dotenv
+```
+
+Une fois la gestion du .env gérer, il faut ajouter le module Mongoose qui est celui que nous allons utiliser pour les requètes et la connection à la base de données que vous venez de créer.
+
+```bash
+ldandoy@host ~/cours-nodejs 
+$ npm i mongoose
+```
+
+Créez un nouveau fichier dans le dossier middlewares, pour gérer la connexion.
+
+```JavaScript
+// ~/cours-nodejs/server/middleswares/conenctDB.js
+
+require('dotenv').config();
+const mongoose = require('mongoose');
+
+const connectDB = () => {
+    mongoose.connect(process.env.MONGODB_URL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    });
+
+    const db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function() {
+        console.log('Connected to DB');
+    });
+}
+
+module.exports = connectDB;
+```
+
+Puis il faut initialiser la connection, dans le fichier index.js.
+
+```JavaScript
+// ~/cours-nodejs/server/index.js
+
+const express = require('express')
+const morgan  = require('morgan')
+const helmet  = require('helmet')
+const cors    = require('cors')
+
+const todosRoute = require('./routes/todosRoute');
+const notFound = require('./middlewares/notFound');
+const errorHandler = require('./middlewares/errorHandler');
+const connectDB = require('./middlewares/connectDB');
+
+connectDB()
+
+const app = express()
+const port = 3000
+
+app.use(morgan('dev'))
+app.use(helmet())
+app.use(cors())
+
+app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.use('/', todosRoute);
+
+app.use(notFound);
+app.use(errorHandler);
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
+```
+
+Maintenant, on va s'occuper de lier notre application à la base de données. Pour le moment on est conencté, mais il faut encore ajouter, lister, modifier et supprimer les données.
+
+Pour commencer il va falloir créer un model pour représenter nos données. Restons sur notre exemple de la todo liste. Créer un dossier models, puis un fichier todoModel.js.
+
+```bash
+ldandoy@host ~/cours-nodejs/server
+$ mkdir models
+$ cd models
+$ touch todoModel.js
+```
+
+```JavaScript
+// ~/cours-nodejs/server/models/todoModel.js
+
+const mongoose = require("mongoose");
+
+const todoModel = new mongoose.Schema({
+    nom: {
+        type: String,
+        require: true,
+    },
+    content: {
+        type: String,
+        require: true,
+    },
+},{
+    timestamps: {
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
+    }
+})
+
+module.exports = mongoose.model('todos', todoModel)
+```
+
+Maintenant on doit créé un nouveau fichier de routes.
+
+```JavaScript
+// ~/cours-nodejs/server/routes/todosMongoRoute.js
+
+const express = require('express');
+const todoModel = require('../models/todoModel');
+
+const Router = express.Router();
+
+// GET: /api/todos
+Router.get('/todos', (req, res, next) => {
+    todoModel.find()
+    .then(todos => res.status(200).send(todos))
+    .catch(error => next(error));
+});
+
+// GET: /api/todos/:todoId
+Router.get('/todos/:todoId', (req, res, next) => {
+    const id = req.params.todoId;
+
+    todoModel.findOne({_id: id})
+    .then(todo => {
+        if (todo === null)
+            res.status(200).send("La todo n'a pas été trouvé.")
+        res.status(200).send(todo)
+    })
+    .catch(error => next(error));
+});
+
+// POST: /api/todos
+Router.post('/todos', (req, res, next) => {
+    const todo = new todoModel({
+        body: req.body.body,
+        user: req.body.userId,
+    });
+
+    todo.save()
+    .then(todo => {res.status(200).send(todo)})
+    .catch(error => {next(error)});
+});
+
+// PUT /api/todos/:todoId
+Router.put('/todos/:todoId', (req, res, next) => {
+    const id = req.params.todoId;
+
+    todoModel.updateOne({_id: id}, {$set: {body: req.body.body}})
+    .then(tw => {res.status(200).send("Todo bien modifié.")})
+    .catch(error => {next(error)});
+});
+
+// DELETE /api/todos/:todoId
+Router.delete('/todos/:todoId', (req, res, next) => {
+    const id = req.params.todoId;
+
+    todoModel.deleteOne({_id: id})
+    .exec()
+    .then(result => {res.status(202).send('Todo bien supprimé.')})
+    .catch(error => {next(error)});
+})
+
+module.exports = Router;
+```
+
+Et pour finir, il faut dire au serveur de l'utiliser.
+
+```JavaScript
+// ~/cours-nodejs/server/index.js
+
+const express = require('express')
+const morgan  = require('morgan')
+const helmet  = require('helmet')
+const cors    = require('cors')
+
+const todosRoute = require('./routes/todosRoute');
+const todosMongoRoute = require('./routes/todosMongoRoute');
+const notFound = require('./middlewares/notFound');
+const errorHandler = require('./middlewares/errorHandler');
+const connectDB = require('./middlewares/connectDB');
+
+connectDB()
+
+const app = express()
+const port = 3000
+
+app.use(morgan('dev'))
+app.use(helmet())
+app.use(cors())
+
+app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.use('/',    todosRoute);
+app.use('/api', todosMongoRoute)
+
+app.use(notFound);
+app.use(errorHandler);
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
+```
+
+Exemple de requète GET
+
+[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/api_todo1.jpg)
+
+Exemple de requète POST
+
+[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/api_todo2.jpg)
+
+Exemple de requète PUT
+
+[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/api_todo3.jpg)
+
+Exemple de requète GET
+
+[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/api_todo4.jpg)
+
+Exemple de requète DELETE
+
+[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/api_todo5.jpg)
 
 Pour en savoir plus [Voir: mongoose](https://mongoosejs.com/)
 
