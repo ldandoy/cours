@@ -1158,7 +1158,7 @@ Exemple de requète GET
 
 Exemple de requète DELETE
 
-[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/api_todo5.jpg)
+[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/api_todo5.jpg?raw=true)
 
 Pour en savoir plus [Voir: mongoose](https://mongoosejs.com/)
 
