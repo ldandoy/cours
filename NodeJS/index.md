@@ -380,6 +380,8 @@ app.listen(port, () => {
 
 #### PostMan
 
+Les navigateurs normaux (chrome, firefox...) ne permettent de faire que des requètes GET et POST. Il nous faut donc un outils qui va nous permettre de créer des requètes PUT, DELETE... Et ainsi de suite. Pour l'installer, il faut vous connecter à [https://www.postman.com/](https://www.postman.com/)
+
 #### GET request
 
 On a vu la requète la plus simple, GET /, à présent, on va complexifier les choses et créer un GET avec l'url /todos, qui va renvoyer la liste des todos.
