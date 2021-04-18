@@ -1,4 +1,4 @@
-// ~/cours-nodejs/server/notFound.js
+// ~/cours-nodejs/server/middleswares/notFound.js
 
 const notFound = (req, res, next) => {
     const error = new Error (`Not Found - ${req.originalUrl}`);

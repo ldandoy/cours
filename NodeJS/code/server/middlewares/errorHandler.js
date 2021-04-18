@@ -1,4 +1,4 @@
-// ~/cours-nodejs/server/errorHandler.js
+// ~/cours-nodejs/server/middleswares/errorHandler.js
 
 const errorHandler = (req, res, next) => {
     const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
