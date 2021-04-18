@@ -40,6 +40,7 @@ Ce support est en cours d'écriture et évolue, il est écrit pour la version 15
       - [Définition et rôle](#définition-et-rôle)
       - [Mise en place de deux middlewares](#mise-en-place-de-deux-middlewares)
     - [Connexion avec la BDD](#connexion-avec-la-bdd)
+      - [.env](#env)
       - [MongoDB](#mongodb)
       - [Mysql](#mysql)
 
@@ -892,7 +893,19 @@ app.listen(port, () => {
 
 Comme vous l'avez vu, à chaque fois que vous redémarrer votre server, tout revient au début, avec les trois todos du tableau. Donc il faut utiliser une base de donnée pour stocker les données.
 
+#### .env
+
+Dans un premier temps, on va créer un fichier .env, afin de stocker les informations de connection à la base de données, par la suite.
+
+```bash
+MONGO_URL = 
+```
+
 #### MongoDB
+
+La première étape est de vous rendre sur [https://cloud.mongodb.com/](https://cloud.mongodb.com/)
+
+[]()
 
 Pour en savoir plus [Voir: mongoose](https://mongoosejs.com/)
 
