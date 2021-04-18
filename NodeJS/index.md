@@ -32,13 +32,13 @@ Ce support est en cours d'écriture et évolue, il est écrit pour la version 15
       - [PostMan](#postman)
       - [GET request](#get-request)
       - [POST request](#post-request)
-      - [PUT/PATCH request](#putpatch-request)
+      - [PUT request](#put-request)
       - [DELETE request](#delete-request)
     - [Les modules Cors et Helmet](#les-modules-cors-et-helmet)
     - [Organiser son code en plusieurs fichiers](#organiser-son-code-en-plusieurs-fichiers)
     - [Middleware](#middleware)
       - [Définition et rôle](#définition-et-rôle)
-      - [Mise en place de deux middleware](#mise-en-place-de-deux-middleware)
+      - [Mise en place de deux middlewares](#mise-en-place-de-deux-middlewares)
     - [Connexion avec la BDD](#connexion-avec-la-bdd)
       - [MongoDB](#mongodb)
       - [Mysql](#mysql)
@@ -366,7 +366,7 @@ const morgan  = require('morgan')
 const app = express()
 const port = 3000
 
-app.use(morgan())
+app.use(morgan('dev'))
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -392,7 +392,7 @@ const morgan  = require('morgan')
 const app = express()
 const port = 3000
 
-app.use(morgan())
+app.use(morgan('dev'))
 
 const todos = [{
   id: 1,
@@ -432,7 +432,7 @@ const morgan  = require('morgan')
 const app = express()
 const port = 3000
 
-app.use(morgan())
+app.use(morgan('dev'))
 
 const todos = [{
   id: 1,
@@ -468,6 +468,8 @@ app.listen(port, () => {
 
 #### POST request
 
+Les requètes POST servent dans une architechture REST pour ajouter des éléments.
+
 ```Javascript
 // ~/cours-nodejs/server/index.js
 
@@ -477,7 +479,7 @@ const morgan  = require('morgan')
 const app = express()
 const port = 3000
 
-app.use(morgan())
+app.use(morgan('dev'))
 
 app.use(express.json());
 
@@ -521,9 +523,151 @@ app.listen(port, () => {
 })
 ```
 
-#### PUT/PATCH request
+#### PUT request
+
+Les requètes PUT servent dans une architechture REST à mettre à jour un document ou une ligne complète.
+
+```Javascript
+// ~/cours-nodejs/server/index.js
+
+const express = require('express')
+const morgan  = require('morgan')
+
+const app = express()
+const port = 3000
+
+app.use(morgan('dev'))
+
+app.use(express.json());
+
+let todos = [{
+  id: 1,
+  nom: "Todo 1",
+  content: "Contenu de la todo 1"
+},{
+  id: 2,
+  nom: "Todo 2",
+  content: "Contenu de la todo 2"
+},{
+  id: 3,
+  nom: "Todo 3",
+  content: "Contenu de la todo 3"
+}]
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.get('/todos', (req, res) => {
+  res.status(200).json(todos)
+})
+
+app.get('/todos/:id', (req, res) => {
+  id = req.params.id
+  res.status(200).json(todos[id])
+})
+
+app.post('/todos', (req, res) => {
+  todo = req.body
+
+  todos.push(todo)
+
+  res.status(200).json(todos)
+})
+
+app.put('/todos/:id', (req, res) => {
+  id = req.params.id
+  newTodo = req.body
+
+  todos.forEach((todo, key) => {
+    if (todo.id == id) {
+      todos[key] = newTodo
+    }
+  })
+
+  res.status(200).json(todos)
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
+```
 
 #### DELETE request
+
+Les requètes DELETE servent dans une architechture REST à supprimer un document ou une ligne complète.
+
+```Javascript
+// ~/cours-nodejs/server/index.js
+
+const express = require('express')
+const morgan  = require('morgan')
+
+const app = express()
+const port = 3000
+
+app.use(morgan('dev'))
+
+app.use(express.json());
+
+let todos = [{
+  id: 1,
+  nom: "Todo 1",
+  content: "Contenu de la todo 1"
+},{
+  id: 2,
+  nom: "Todo 2",
+  content: "Contenu de la todo 2"
+},{
+  id: 3,
+  nom: "Todo 3",
+  content: "Contenu de la todo 3"
+}]
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.get('/todos', (req, res) => {
+  res.status(200).json(todos)
+})
+
+app.get('/todos/:id', (req, res) => {
+  id = req.params.id
+  res.status(200).json(todos[id])
+})
+
+app.post('/todos', (req, res) => {
+  todo = req.body
+
+  todos.push(todo)
+
+  res.status(200).json(todos)
+})
+
+app.put('/todos/:id', (req, res) => {
+  id = req.params.id
+  newTodo = req.body
+
+  todos.forEach((todo, key) => {
+    if (todo.id == id) {
+      todos[key] = newTodo
+    }
+  })
+
+  res.status(200).json(todos)
+})
+
+app.delete('/todos/:id', (req, res) => {
+  id = req.params.id
+  todos = todos.filter(todo => todo.id != id)
+  res.status(200).json(todos)
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
+```
 
 ### Les modules Cors et Helmet
 
@@ -547,7 +691,7 @@ const cors    = require('cors')
 const app = express()
 const port = 3000
 
-app.use(morgan())
+app.use(morgan('dev'))
 app.use(helmet())
 app.use(cors())
 
@@ -557,14 +701,199 @@ app.use(express.json());
 
 ### Organiser son code en plusieurs fichiers
 
+Pour organsier son code, le mieux est de mettre les routes d'un côté, pour ne pas tout avoir dans le même fichier. Par exemple si vous avez une api pour des todos, et une pour des catégory, il faudra créer un dossier routes et créer deux fichiers dedans l'un todoRoutes.js et l'autre catRoutes.js.
+
+Maintenant appliquons ce que l'on vient de dire ici.
+
+```bash
+ldandoy@host ~
+$ mkdir routes
+$ cd routes
+$ touch todosRoute.js
+```
+
+Normalement votre dossier devrait être comme suit:
+
+```
+.gitignore
+index.js
+package-lock.json
+package.json
+node_modules
+routes
+ |- todosRoute.js
+```
+
+A présent vous pouvez déplacer le code des routes du fichier index.js vers todosRoute.js
+
+```JavaScript
+// ~/cours-nodejs/server/routes/todosRoute.js
+
+const express = require('express');
+const Router = express.Router();
+
+let todos = [{
+    id: 1,
+    nom: "Todo 1",
+    content: "Contenu de la todo 1"
+},{
+    id: 2,
+    nom: "Todo 2",
+    content: "Contenu de la todo 2"
+},{
+    id: 3,
+    nom: "Todo 3",
+    content: "Contenu de la todo 3"
+}]
+
+Router.get('/todos', (req, res) => {
+    res.status(200).json(todos)
+})
+  
+Router.get('/todos/:id', (req, res) => {
+    id = req.params.id
+    res.status(200).json(todos[id])
+})
+  
+Router.post('/todos', (req, res) => {
+    todo = req.body
+  
+    todos.push(todo)
+  
+    res.status(200).json(todos)
+})
+  
+Router.put('/todos/:id', (req, res) => {
+    id = req.params.id
+    newTodo = req.body
+  
+    todos.forEach((todo, key) => {
+        if (todo.id == id) {
+            todos[key] = newTodo
+        }
+    })
+  
+    res.status(200).json(todos)
+})
+  
+Router.delete('/todos/:id', (req, res) => {
+    id = req.params.id
+    todos = todos.filter(todo => todo.id != id)
+    res.status(200).json(todos)
+})
+
+// Export du module pour pouvoir l'intégrer dans le require
+module.exports = Router;
+```
+
+```JavaScript
+// ~/cours-nodejs/server/index.js
+
+const express = require('express')
+const morgan  = require('morgan')
+const helmet  = require('helmet')
+const cors    = require('cors')
+
+const todosRoute = require('./routes/todosRoute');
+
+const app = express()
+const port = 3000
+
+app.use(morgan('dev'))
+app.use(helmet())
+app.use(cors())
+
+app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.use('/', todosRoute);
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
+```
+
 ### Middleware
 
 #### Définition et rôle
 
-#### Mise en place de deux middleware
+#### Mise en place de deux middlewares
+
+Nous allons créer nous même deux middlewares, l'un pour checker si la route a été trouver, et l'autre pour savoir s'il y a une erreur qui c'est produite pour la renvoyer à l'utilisateur.
+
+Créer le dossier middlewares, puis créez deux fichiers notFound.js et errorHandler.js.
+
+```JavaScript
+// ~/cours-nodejs/server/errorHandler.js
+
+const errorHandler = (req, res, next) => {
+    const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+    res.status(statusCode);
+    res.json({
+        message: error.message,
+        stack: process.env.NODE_ENV === 'production' ? "Erreur" : error.stack
+    })
+}
+
+module.exports = errorHandler
+```
+
+```JavaScript
+// ~/cours-nodejs/server/notFound.js
+
+const notFound = (req, res, next) => {
+    const error = new Error (`Not Found - ${req.originalUrl}`);
+    res.status(404);
+    next(error);
+}
+
+module.exports = notFound
+```
+
+```JavaScript
+// ~/cours-nodejs/server/index.js
+
+const express = require('express')
+const morgan  = require('morgan')
+const helmet  = require('helmet')
+const cors    = require('cors')
+
+const todosRoute = require('./routes/todosRoute');
+const notFound = require('./middlewares/notFound');
+const errorHandler = require('./middlewares/errorHandler');
+
+const app = express()
+const port = 3000
+
+app.use(morgan('dev'))
+app.use(helmet())
+app.use(cors())
+
+app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.use('/', todosRoute);
+
+app.use(notFound);
+app.use(errorHandler);
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
+```
 
 ### Connexion avec la BDD
+
+Comme vous l'avez vu, à chaque fois que vous redémarrer votre server, tout revient au début, avec les trois todos du tableau. Donc il faut utiliser une base de donnée pour stocker les données.
 
 #### MongoDB
 
 #### Mysql
+
+A venir
