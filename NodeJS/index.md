@@ -894,6 +894,8 @@ Comme vous l'avez vu, à chaque fois que vous redémarrer votre server, tout rev
 
 #### MongoDB
 
+Pour en savoir plus [Voir: mongoose](https://mongoosejs.com/)
+
 #### Mysql
 
-A venir
+A venir: [Voir: sequelize](https://sequelize.org/)
