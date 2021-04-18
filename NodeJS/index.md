@@ -422,7 +422,7 @@ app.listen(port, () => {
 })
 ```
 
-[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/todos.jpg)
+![test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/todos.jpg)
 
 En suite, nous allons nous occuper de la route /todos/1, qui va nous renvoyer la todo correspondant à l'id que l'on a demander, ici l'id sera égale à 1.
 
@@ -469,7 +469,7 @@ app.listen(port, () => {
 })
 ```
 
-[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/todo1.jpg)
+![test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/todo1.jpg)
 
 #### POST request
 
@@ -528,7 +528,7 @@ app.listen(port, () => {
 })
 ```
 
-[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/post_todo.jpg)
+![test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/post_todo.jpg?raw=true)
 
 #### PUT request
 
@@ -600,7 +600,7 @@ app.listen(port, () => {
 })
 ```
 
-[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/put_todo.jpg)
+![test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/put_todo.jpg?raw=true)
 
 #### DELETE request
 
@@ -678,7 +678,7 @@ app.listen(port, () => {
 })
 ```
 
-[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/delete_todo.jpg)
+![test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/delete_todo.jpg?raw=true)
 
 ### Les modules Cors et Helmet
 
@@ -1142,19 +1142,19 @@ app.listen(port, () => {
 
 Exemple de requète GET
 
-[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/api_todo1.jpg)
+![test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/api_todo1.jpg?raw=true)
 
 Exemple de requète POST
 
-[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/api_todo2.jpg)
+![test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/api_todo2.jpg?raw=true)
 
 Exemple de requète PUT
 
-[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/api_todo3.jpg)
+![test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/api_todo3.jpg?raw=true)
 
 Exemple de requète GET
 
-[test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/api_todo4.jpg)
+![test](https://github.com/ldandoy/cours/blob/main/NodeJS/img/api_todo4.jpg?raw=true)
 
 Exemple de requète DELETE
 
