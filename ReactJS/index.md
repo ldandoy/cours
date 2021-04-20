@@ -21,6 +21,10 @@ Ce support est en cours d'écriture et évolue.
       - [Destructuration des variables](#destructuration-des-variables)
     - [States](#states)
   - [Les hooks](#les-hooks)
+  - [Redux](#redux)
+    - [Qu'est-ce que Redux](#quest-ce-que-redux)
+    - [Installation](#installation)
+    - [Mise en place d'un store](#mise-en-place-dun-store)
 
 ## Qu'est ce que React JS ?
 
@@ -253,3 +257,11 @@ export default ListContainer
 ```
 
 ## Les hooks
+
+## Redux
+
+### Qu'est-ce que Redux
+
+### Installation
+
+### Mise en place d'un store
