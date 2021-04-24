@@ -1,4 +1,4 @@
-# Cours ReactJS
+# Cours TypeScript
 
 Voici mon support de cours pour TypeScript. N'hésitez pas à me faire vos retours sur ce [lien github](http://github.com/ldandoy/cours). Ou par mail: [ldandoy@overconsulting.net](mailto:ldandoy@overconsulting.net)
 
@@ -6,7 +6,7 @@ Ce support est en cours d'écriture et évolue.
 
 ## Sommaire <!-- omit in toc -->
 
-- [Cours ReactJS](#cours-reactjs)
+- [Cours TypeScript](#cours-typescript)
   - [Installation](#installation)
   - [Premier fichier et fonctionnement](#premier-fichier-et-fonctionnement)
   - [Variables](#variables)
