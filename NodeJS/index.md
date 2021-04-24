@@ -43,6 +43,7 @@ Ce support est en cours d'écriture et évolue, il est écrit pour la version 15
       - [.env](#env)
       - [MongoDB](#mongodb)
       - [Mysql](#mysql)
+  - [Passons à un cas réel](#passons-à-un-cas-réel)
 
 ## Introduction
 
@@ -1167,3 +1168,161 @@ Pour en savoir plus [Voir: mongoose](https://mongoosejs.com/)
 #### Mysql
 
 A venir: [Voir: sequelize](https://sequelize.org/)
+
+## Passons à un cas réel
+
+Dans ce cas réel nous allons créer une API pour les produits. Voici la scruture d'un produit
+
+```Json
+{
+  "_id":          "ID du produit",
+  "name":         "Nom du produit",
+  "price":        "prix du produit",
+  "description":  "Description du produit",
+  "created_at":   "Date de création",
+  "updated_at":   "Date de dernière mise à jour"
+}
+```
+
+Commençons par la mise en place du models
+
+```Javascript
+// ~/cours-nodejs/server/models/productModel.js
+
+const mongoose = require("mongoose");
+
+const productModel = new mongoose.Schema({
+    name: {
+        type: String,
+        require: true,
+    },
+    price: {
+        type: Number,
+        require: true,
+    },
+    description: {
+        type: String,
+        require: true,
+    },
+},{
+    timestamps: {
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
+    }
+})
+
+module.exports = mongoose.model('products', productModel)
+```
+
+Puis par mettre en place la route
+
+```Javascript
+// ~/cours-nodejs/server/routes/productsRoute.js
+
+const express = require('express');
+const productModel = require('../models/productModel');
+
+const Router = express.Router();
+
+// GET: /api/products
+Router.get('/products', (req, res, next) => {
+    productModel.find()
+    .then(products => res.status(200).send(products))
+    .catch(error => next(error));
+});
+
+// GET: /api/products/:productId
+Router.get('/products/:productId', (req, res, next) => {
+    const productId = req.params.productId;
+
+    productModel.findOne({_id: productId})
+    .then(product => {
+        if (product === null)
+            res.status(200).send("Le produit n'a pas été trouvé.")
+        res.status(200).send(product)
+    })
+    .catch(error => next(error));
+});
+
+// POST: /api/products
+Router.post('/products', (req, res, next) => {
+    const product = new productModel({
+        name: req.body.name,
+        description: req.body.description,
+        price: req.body.price
+    });
+
+    product.save()
+    .then(product => {res.status(200).send(product)})
+    .catch(error => {next(error)});
+});
+
+// PUT /api/products/:productId
+Router.put('/products/:productId', (req, res, next) => {
+    const productId = req.params.productId;
+
+    productModel.updateOne({_id: productId}, {$set: {
+        name: req.body.name,
+        description: req.body.description,
+        price: req.body.price
+    }})
+    .then(tw => {res.status(200).send("Produit bien modifié.")})
+    .catch(error => {next(error)});
+});
+
+// DELETE /api/products/:productId
+Router.delete('/products/:productId', (req, res, next) => {
+    const id = req.params.productId;
+
+    productModel.deleteOne({_id: id})
+    .exec()
+    .then(result => {res.status(202).send('Produit bien supprimé.')})
+    .catch(error => {next(error)});
+})
+
+module.exports = Router;
+```
+
+Et pour finir on a plus qu'à ajouter la route à notre serveur
+
+```Javascript
+// ~/cours-nodejs/server/index.js
+
+const express = require('express')
+const morgan  = require('morgan')
+const helmet  = require('helmet')
+const cors    = require('cors')
+
+const todosRoute = require('./routes/todosRoute')
+const todosMongoRoute = require('./routes/todosMongoRoute')
+const productsRoute = require('./routes/productsRoute')
+const notFound = require('./middlewares/notFound')
+const errorHandler = require('./middlewares/errorHandler')
+const connectDB = require('./middlewares/connectDB')
+
+connectDB()
+
+const app = express()
+const port = 3000
+
+app.use(morgan('dev'))
+app.use(helmet())
+app.use(cors())
+
+app.use(express.json())
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.use('/',    todosRoute)
+app.use('/api', todosMongoRoute)
+app.use('/api', productsRoute)
+
+app.use(notFound)
+app.use(errorHandler)
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
+```

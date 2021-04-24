@@ -243,7 +243,7 @@ let obj = { id: 1, name: "Pauline" } // Variable de type objets (Object en angla
 
 ### Les selectors
 
-Alors comme vous l'avez vu, dans notre TIC TAC TOE, il va nous falloir accéder au différents éléments (Nom du joueur, marquer du joueur lorsqu'il joue, chaques cases). On donc reprendre un peu notre HTML.
+Alors comme vous l'avez vu, dans notre TIC TAC TOE, il va nous falloir accéder au différents éléments (Nom du joueur, marquer la case ou le joueur joue). On donc reprendre un peu notre HTML.
 
 On va aussi ajouter un élément HTML, avec un id msg, afin d'afficher tous les messages.
 

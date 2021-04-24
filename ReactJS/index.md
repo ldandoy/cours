@@ -16,11 +16,18 @@ Ce support est en cours d'écriture et évolue.
     - [Introduction](#introduction)
     - [Pourquoi le JSX ?](#pourquoi-le-jsx-)
     - [JSX n’est rien d’autre qu’une expression](#jsx-nest-rien-dautre-quune-expression)
-  - [Props and states](#props-and-states)
-    - [Props](#props)
-      - [Destructuration des variables](#destructuration-des-variables)
+  - [Organisation du code](#organisation-du-code)
+    - [Dossiers et sous-dossiers](#dossiers-et-sous-dossiers)
+    - [Import de fichiers](#import-de-fichiers)
+    - [Les styles avec les composants](#les-styles-avec-les-composants)
+    - [Destructuration des variables](#destructuration-des-variables)
+  - [Props](#props)
+  - [Cycle de vie d'un composant](#cycle-de-vie-dun-composant)
     - [States](#states)
   - [Les hooks](#les-hooks)
+    - [useState](#usestate)
+    - [useEffect](#useeffect)
+  - [Les formulaires dans React](#les-formulaires-dans-react)
   - [Redux](#redux)
     - [Qu'est-ce que Redux](#quest-ce-que-redux)
     - [Installation](#installation)
@@ -129,12 +136,37 @@ const getGreeting = (user) => {
 
 getGreeting('Mikael')
 getGreeting()
-
 ```
 
-## Props and states
+## Organisation du code
 
-### Props
+### Dossiers et sous-dossiers
+
+### Import de fichiers
+
+### Les styles avec les composants
+
+### Destructuration des variables
+
+```JavaScript
+import React from 'react'
+
+const List = ({items}) => (
+    <ul>
+        {items.map(item => (
+            <li key={item}>{item}</li>
+        ))}
+    </ul>
+)
+
+const ListContainer = () => (
+    <List items={['item 1', 'item 2', 'item 3', 'item 4']} />
+)
+
+export default ListContainer
+```
+
+## Props
 
 Les props sont des variables que l'on peut passer aux composants, lorsqu'ils sont appelés.
 
@@ -154,25 +186,7 @@ const ListContainer = () => (
 export default ListContainer
 ```
 
-#### Destructuration des variables
-
-```JavaScript
-import React from 'react'
-
-const List = ({items}) => (
-    <ul>
-        {items.map(item => (
-            <li key={item}>{item}</li>
-        ))}
-    </ul>
-)
-
-const ListContainer = () => (
-    <List items={['item 1', 'item 2', 'item 3', 'item 4']} />
-)
-
-export default ListContainer
-```
+## Cycle de vie d'un composant
 
 ### States
 
@@ -221,10 +235,19 @@ const ListContainer = () => (
 export default ListContainer
 ```
 
-Version avec  les arrow fonctions
+Avant de passer à la version des arrow fonctions, nous allons explorer plus en avant le cycle de vie d'un composant.
+
+
+
+## Les hooks
+
+
+### useState
+
+Version avec les arrow fonctions
 
 ```JavaScript
-import React from 'react'
+import React, { useState } from 'react'
 
 const List = ({items}) => {
     [filteredItems, setFilteredItems] = React.useState(items)
@@ -256,7 +279,9 @@ const ListContainer = () => (
 export default ListContainer
 ```
 
-## Les hooks
+### useEffect
+
+## Les formulaires dans React
 
 ## Redux
 
