@@ -15,7 +15,7 @@ Ce support est en cours d'écriture et évolue, il est écrit pour la version 15
     - [Les variables](#les-variables)
     - [Les structures de tests](#les-structures-de-tests)
       - [Switch structure](#switch-structure)
-      - [if structure](#if-structure)
+      - [if-else structure](#if-else-structure)
     - [Les boucles](#les-boucles)
       - [Boucle For](#boucle-for)
       - [Boucle While](#boucle-while)
@@ -44,6 +44,9 @@ Ce support est en cours d'écriture et évolue, il est écrit pour la version 15
       - [MongoDB](#mongodb)
       - [Mysql](#mysql)
   - [Passons à un cas réel](#passons-à-un-cas-réel)
+  - [Mettre en place une authentification (JWT)](#mettre-en-place-une-authentification-jwt)
+    - [Qu'est ce que les Json Web Token ?](#quest-ce-que-les-json-web-token-)
+    - [Mise en place](#mise-en-place)
 
 ## Introduction
 
@@ -154,7 +157,7 @@ switch (test) {
 }
 ```
 
-#### if structure
+#### if-else structure
 
 ```Javascript
 // ~/cours-nodejs/if.js
@@ -1325,4 +1328,187 @@ app.use(errorHandler)
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
+```
+
+## Mettre en place une authentification (JWT)
+
+### Qu'est ce que les Json Web Token ?
+
+Un JSON Web Token est un access token (jeton d’accès) aux normes [RFC 7519](https://tools.ietf.org/html/rfc7519) qui permet un échange sécurisé de donnée entre deux parties. Il contient toutes les informations importantes sur une entité, ce qui rend la consultation d’une base de données superflue et la session n’a pas besoin d’être stockée sur le serveur (stateless session).
+
+Les JSON Web Token sont particulièrement appréciés pour les opérations d’identification. Les messages courts peuvent être chiffrés et fournissent alors des informations sûres sur l’identité de l’expéditeur et si celui-ci dispose des droits d’accès requis. Les utilisateurs eux-mêmes ne sont qu’indirectement en contact avec les token, par exemple lorsqu’ils entrent un nom d’utilisateur et un mot de passe dans un masque. La véritable communication se fait entre les différentes applications du côté serveur et client.
+
+### Mise en place
+
+Pour mettre en place une authentification, on va créer 2 routes, une pour s'enregister et une seconde pour s'authentifier. En suite un ajouter un middleware, pour être sur que la personne est authentifié.
+
+Dans un premier temps, on ajoute un fichier de model pour le User.
+
+```JavaScript
+// ~/cours-nodejs/server/models/userModel.js
+
+const mongoose = require('mongoose');
+
+const userSchema = mongoose.Schema({
+    _id: mongoose.Schema.Types.ObjectId,
+    email: { type: String, required: true },
+    password: { type: String, required: true }
+});
+
+module.exports = mongoose.model('User', userSchema);
+```
+
+Dans un premier temps, on va installer le module jsonwebtoken et bcrypt afin de crypter les mots de passe en base de données. Puis on va ajouter un fichier pour gérer les routes pour l'authentification
+
+```bash
+ldandoy@host ~/cours-nodejs 
+$ npm i jsonwebtoken bcrypt
+```
+
+```JavaScript
+// ~/cours-nodejs/server/routes/authRoute.js
+
+onst express = require("express");
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+const User = require('../models/User');
+
+const router = express.Router();
+
+router.post("/register", (req, res) => {
+    if (JSON.stringify(req.body) !== '{}' && (req.body.email !== undefined && req.body.email != "" && req.body.email == req.body.email2) && (req.body.password !== undefined && req.body.password != "" && req.body.password == req.body.password2)) {
+        User.find({ email: req.body.email })
+            .exec()
+            .then(user => {
+                if (user.length >= 1) {
+                    return res.status(409).json({
+                        message: 'A user with this email alreay exists'
+                    })
+                } else {
+                    bcrypt.hash(req.body.password, 10, (err, hash) => {
+                        if (err) {
+                            console.log(err);
+                            return res.status(500).json({ 'message': err });
+                        } else {
+                            const user = new User({
+                                _id: new mongoose.Types.ObjectId(),
+                                email: req.body.email,
+                                password: hash
+                            });
+                            user.save()
+                                .then(user => {
+                                    user.password=null;
+                                    res.status(200).json(user);
+                                })
+                                .catch(err => {
+                                    res.status(500).json({ 'message': err });
+                                });
+                        }
+                    })
+                }
+            })
+            .catch(err => {
+                res.status(500).json({ 'message': err });
+            });
+    } else {
+        res.status(500).json({ 'message': "Vous n'avez pas rempli tous les champs, ou ils sont mal confirmés" });
+    }
+});
+
+router.post("/login", (req, res) => {
+    if (req.body.email != "" && req.body.password != "") {
+        User.find({ email: req.body.email })
+            .exec()
+            .then(user => {
+                if (user.length < 1) {
+                    return res.status(404).json({ 'message': 'User Not found !' });
+                }
+
+                bcrypt.compare(req.body.password, user[0].password, (err, result) => {
+                    if (err) {
+                        return res.status(500).json({ 'message': err });
+                    }
+
+                    if (result) {
+                        const token = jwt.sign({
+                            id: user[0]._id,
+                            email: user[0].email,
+                        }, process.env.JWT_KEY, {
+                            expiresIn: "1h"
+                        })
+
+                        return res.status(200).json({
+                            message: "Auth successfull",
+                            token: token
+                        });
+                    }
+
+                    res.status(500).json({ 'message': 'Auth failed !' });
+                })
+            })
+            .catch(err => {
+                res.status(500).json({ 'message': err });
+            });
+    } else {
+        res.status(500).json({ 'message': "Vous n'avez pas rempli tous les champs" });
+    }
+});
+
+module.exports = router;
+```
+
+A présent, le middleware, celui qui va vérifier si le token est bon, et mettre les informations venant du token dans la variable userData.
+
+```JavaScript
+// ~/cours-nodejs/server/middlewares/check_auth.js
+
+const jwt = require('jsonwebtoken');
+
+module.exports = (req, res, next) => {
+    try {
+        const token = req.headers.authorization.split(" ")[1];
+        const decode = jwt.verify(token, process.env.JWT_KEY);
+        req.userData = decode;
+        next();
+    } catch (error) {
+        return res.status(401).json({ 'error': 'Auth failed !' });
+    }
+};
+```
+
+Pour finir, on va pour finir voir comment on utilise ce middleware pour laisser accéder uniquement les bonnes personnes à la ressources. Nous allons créer une nouvelle route pour accéder au information de mon compte.
+
+```JavaScript
+// ~/cours-nodejs/server/routes/userRoute.js
+
+const express = require("express");
+
+const checkAuth = require('../middlewares/check_auth');
+
+const User = require('../models/User');
+
+const router = express.Router();
+
+router.get("/me", checkAuth, (req, res) => {
+    console.log(req.userData);
+    email = req.userData.email
+
+    User.find({ email: email })
+        .select({'_id': 0, 'email': 1})
+        .exec()
+        .then(user => {
+            if (user.length < 1) {
+                return res.status(404).json({ 'message': 'User Not found !' });
+            }
+
+            return res.status(200).json(user);
+        })
+        .catch(err => {
+            res.status(500).json({ 'message': err });
+        });
+});
+
+module.exports = router;
 ```

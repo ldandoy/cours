@@ -21,10 +21,14 @@ Ce support est en cours d'écriture et évolue.
 		- [Structure de code](#structure-de-code)
 			- [If - else](#if---else)
 			- [Foreach](#foreach)
+			- [While](#while)
+			- [For](#for)
 		- [Fonctions](#fonctions)
 		- [LocalStorage](#localstorage)
 
 ## Qu'est ce que la JavaScript et à quoi ça sert ?
+
+Le JavaScript est un langage de programmation qui permet d’implémenter des mécanismes complexes sur une page web. À chaque fois qu’une page web fait plus que simplement afficher du contenu statique — afficher du contenu mis à jour à des temps déterminés, des cartes interactives, des animations 2D/3D, des menus vidéo défilants, etc... — JavaScript a de bonnes chances d’être impliqué. C’est la troisième couche des technologies standards du web, les deux premières (HTML et CSS) étant couvertes bien plus en détail dans d’autres tutoriels sur MDN. [En savoir plus](https://developer.mozilla.org/fr/docs/Learn/JavaScript/First_steps/What_is_JavaScript)
 
 ## Différence entre JS dans le navigateur ou coté server (NodeJS)
 
@@ -35,6 +39,14 @@ Alors que dans un navigateur, on aura surtout de la gestion d'évenement, de la 
 Mais par contre, on pourrai tout à faite avoir du JavaScript dans le navigateur, qui fait appel à un JavaScript qui se trouver côté serveur (NodeJS).
 
 ## LE DOM
+
+Le DOM (Document Object Model) est une interface pour vos pages web. C'est une API permettant aux programmes de lire et de manipuler le contenu de la page, sa structure et ses styles. Passons tout cela en revue pour comprendre comment ça marche.
+
+Le DOM est une représentation du document HTML source. Comme nous le verrons plus loin, il comporte quelques différences, mais il s’agit pour l'essentiel d’une conversion de la structure et du contenu du document HTML en un modèle objet utilisable par divers programmes.
+
+La structure d'objet du DOM est représentée par ce qu'on appelle une "arborescence de noeuds" (node tree). On l'appelle ainsi parce qu'il peut être considéré comme un arbre qui se ramifie en plusieurs branches enfants, chacune pouvant avoir des feuilles. Le premier parent est l'élément racine <html>, les "branches" enfants sont les éléments imbriqués et les "feuilles" sont le contenu des éléments.
+
+[Pour en savoir plus](https://la-cascade.io/le-dom-cest-quoi-exactement/)
 
 ## Notre projet: TIC TAC TOE
 
@@ -196,23 +208,25 @@ Une fois ouvert, vous voyez la partie HTML en place. A présent pour voir la par
 
 Parlons variables ! Déja qu'est-ce qu'une variable ? Voici la définition Wikipédia
 
-```
 En informatique, les variables sont des symboles qui associent un nom (l'identifiant) à une valeur. Dans la plupart des langages et notamment les plus courants, les variables peuvent changer de valeur au cours du temps (dynamique). Dans les langages de certains paradigmes, notamment la programmation fonctionnelle, leur valeur est au contraire figée dans le temps (statique).
 
 Contrairement à une variable, une constante est un identificateur associé à une valeur fixe. Syntaxiquement, cet identificateur a tous les aspects d'une variable. Cependant, il lui est affecté une valeur définitive, c'est-à-dire constante, comme la taille d'un plateau d'échecs (8x8). Une constante contient une valeur qui peut avoir des valeurs différentes suivant les exécutions, à la manière du jeu démineur dont le joueur peut choisir la taille du plateau.
 
 Dans un langage de programmation, une variable est un espace de stockage pour une information.
-```
 
-Alors c'est beaucoup de chose pour dire une simple chose. En gros, c'est un endroit en mémoire dans votre ordinateur où vous stocker une information en lui donnant une étiquette pour la rétrouver. Dans l'exemple suivant, je vais créer une variable qui aura pour identifiant "name", et pour valeur "Loïc".
+Alors c'est beaucoup de chose pour dire une simple chose. En gros, c'est un endroit dans la mémoire de votre ordinateur où vous pouvez stocker une information en lui donnant une étiquette pour la rétrouver. Dans l'exemple suivant, je vais créer une variable qui aura pour identifiant "name", et pour valeur "Loïc".
 
 ```JavaScript
+// js/app.js
+
 let name = "Loïc"
 ```
 
-A présent si je veux rertouver ce que j'ai stocké dans name et bien je n'ai qu'à appeler name. Je vais dire Hello Loïc dans le prochain exemple, en modifiant mon fichier app.js
+A présent si je veux retrouver ce que j'ai stocké dans la variable qui a pour identifiant "name" et bien je n'ai qu'à appeler par son identifiant. Je vais dire "Hello Loïc" dans le prochain exemple, en modifiant mon fichier app.js
 
 ```JavaScript
+// js/app.js
+
 let name = "Loïc"
 
 console.log("Hello", name) // Affiche Hello Loïc
@@ -221,6 +235,8 @@ console.log("Hello", name) // Affiche Hello Loïc
 Je peux modifier la valeur de name, par exemple si je veux dire Hello Cindy après avoir dit Hello Loïc, je peux écrire le code suivant:
 
 ```JavaScript
+// js/app.js
+
 let name = "Loïc"
 
 console.log("Hello", name) // Affiche Hello Loïc
@@ -243,9 +259,9 @@ let obj = { id: 1, name: "Pauline" } // Variable de type objets (Object en angla
 
 ### Les selectors
 
-Alors comme vous l'avez vu, dans notre TIC TAC TOE, il va nous falloir accéder au différents éléments (Nom du joueur, marquer la case ou le joueur joue). On donc reprendre un peu notre HTML.
+Comme nous l'avons vu, dans notre TIC TAC TOE, il va nous falloir accéder au différents éléments (Nom du joueur, les différentes cases...). On va donc reprendre un peu notre HTML.
 
-On va aussi ajouter un élément HTML, avec un id msg, afin d'afficher tous les messages.
+Nous allons aussi ajouter un élément HTML, avec un id "msg", afin d'afficher tous les messages. Et mettre un id unique pour chaque case.
 
 ```html
 <!DOCTYPE html>
@@ -275,19 +291,19 @@ On va aussi ajouter un élément HTML, avec un id msg, afin d'afficher tous les 
 		<!-- Grid de jeu -->
 		<table id="table_game">
 			<tr>
-				<td class="col a1"></td>
-				<td class="col a2"></td>
-				<td class="col a3"></td>
+				<td id="a1" class="col"></td>
+				<td id="a2" class="col"></td>
+				<td id="a3" class="col"></td>
 			</tr>
 			<tr>
-				<td class="col b1"></td>
-				<td class="col b2"></td>
-				<td class="col b3"></td>
+				<td id="b1" class="col"></td>
+				<td id="b2" class="col"></td>
+				<td id="b3" class="col"></td>
 			</tr>
 			<tr>
-				<td class="col c1"></td>
-				<td class="col c2"></td>
-				<td class="col c3"></td>
+				<td id="c1" class="col"></td>
+				<td id="c2" class="col"></td>
+				<td id="c3" class="col"></td>
 			</tr>
 		</table>
 		
@@ -296,36 +312,13 @@ On va aussi ajouter un élément HTML, avec un id msg, afin d'afficher tous les 
 </html>
 ```
 
-A présent passons à la partie JS. Nous allons nous servire de tous ce qu'on a vu jusque là. Création de variable et bien sûr utilisation des selecteurs. Alors nous allons pincipalement en voir 3 (getElementById, querySelector et querySelectorAll).
+A présent passons à la partie JS. Nous allons nous servire de tous ce qu'on a vu jusque là. Création de variable et bien sûr utilisation des selecteurs. Nous allons pincipalement en voir 3 (getElementById, querySelector et querySelectorAll).
 
-Pour le selecteur getElementById, il s'utilise de la façon suivante: document.getElementById(), c'est le plus ancien des trois. Il va donc servir à cibler un élément particulier du DOM. Normalement chaque element de la page, a un nom de base (h1, a, img...) dessus, on peut ajouter deux types d'identificateur (class et id).
+Pour le selecteur getElementById, il s'utilise de la façon suivante: document.getElementById(), c'est le plus ancien des trois. Il va donc servir à cibler un élément particulier du DOM car comme nous l'avons vu, l'id doit être unique dans la page. Normalement chaque element de la page, a un nom de base (h1, a, img...) dessus, on peut ajouter deux types d'identificateur (class et id).
 
 La différence entre les deux, est que id doit être unique, et class peut être réutiliser. Dans notre exemple on voit bien que l'id msg n'est utilisé qu'une fois car il ne sera pas à plusieurs endroit, alors que col, est utilisé sur chaque colonne, c'est pour ça qu'on a utiliser une class pour col et non pas un id.
 
-Si on va plus loin, on aurait pu mettre des id pour a1, a2 a3... Très c'est ce qu'on va faire alors !
-
-```html
-<!-- Grid de jeu -->
-<table id="table_game">
-	<tr>
-		<td id="a1" class="col"></td>
-		<td id="a2" class="col"></td>
-		<td id="a3" class="col"></td>
-	</tr>
-	<tr>
-		<td id="b1" class="col"></td>
-		<td id="b2" class="col"></td>
-		<td id="b3" class="col"></td>
-	</tr>
-	<tr>
-		<td id="c1" class="col"></td>
-		<td id="c2" class="col"></td>
-		<td id="c3" class="col"></td>
-	</tr>
-</table>
-```
-
-Voilà qui est mieux ! A présent, on voit bien que ne peut pas utiliser document.getElementById() pour adresser des classes, c'est pour cela que document.querySelectorAll() a été créé. Vous pouvez ainsi cibler tous les éléments qui ont la même classe. Et si jamais vous voulez cibler un seul élément, qui n'aurait qu'un classe il est possible avec document.querySelector(). ces deux dernières fonctions utilisent la même chose que le CSS à savoir un "." avant le nom des classes et un '#' devant le nom de id.
+A présent, on voit bien que ne peut pas utiliser document.getElementById() pour adresser des classes, c'est pour cela que document.querySelectorAll() a été créé. Vous pouvez ainsi cibler tous les éléments qui ont la même classe. Et si jamais vous voulez cibler un seul élément, qui n'aurait qu'un classe il est possible avec document.querySelector(). ces deux dernières fonctions utilisent la même chose que le CSS à savoir un "." avant le nom des classes et un '#' devant le nom de id.
 
 A présent il va falloir utliser ces fonctions dans notre code. Dans un premier temps, nous allons vider le fichier app.js. Et ajouter le code suivant.
 
@@ -333,15 +326,15 @@ A présent il va falloir utliser ces fonctions dans notre code. Dans un premier 
 // js/app.js
 
 let cols = document.querySelectorAll(".col");
-let a1 = document.querySelector('.a1');
-let a2 = document.querySelector('.a2');
-let a3 = document.querySelector('.a3');
-let b1 = document.querySelector('.b1');
-let b2 = document.querySelector('.b2');
-let b3 = document.querySelector('.b3');
-let c1 = document.querySelector('.c1');
-let c2 = document.querySelector('.c2');
-let c3 = document.querySelector('.c3');
+let a1 = document.querySelector('#a1');
+let a2 = document.querySelector('#a2');
+let a3 = document.querySelector('#a3');
+let b1 = document.querySelector('#b1');
+let b2 = document.querySelector('#b2');
+let b3 = document.querySelector('#b3');
+let c1 = document.querySelector('#c1');
+let c2 = document.querySelector('#c2');
+let c3 = document.querySelector('#c3');
 ```
 
 Nous avons donc créer 10 variables, 9 pour chaques cases de la grille de jeu, et 1 qui sera un tableau contenant toutes les cases. Nous avons besoin des deux, car on va ajouter des évènements sur les cases, pour gérer lorsque l'on passe al souris sur une case ou lorsque l'on clique dessus. Et d'un autre côté on aura besoin de savoir ce qu'il y a dans chaques cases, c'est pour cela qu'on besoin des toutes ces variables.
@@ -470,6 +463,29 @@ cols.forEach((col) => {
 ```
 
 Si vous ajouter la ligne console.log et que vous regarder dans la console, vous verrez bien tous les éléments. ForEach, est un boucle qui va refaire le code contenue entre les paranthèses, pour chaque élément de cols. A chaque fois col, va prendre la valeur du nouvel élément.
+
+#### While
+
+A présent voyons comment nous aurions pu faire autrement, mais si à mon sens Foreach est la meilleur des solutions pour parcourir un tableau, donc on ne connait pas le nombre d'élément. Dans ce cas, voyons comment afficher les nombres de 0 à 9.
+
+```JavaScript
+let compte = 0
+
+while (compteur > 10) {
+	console.log(compteur)
+	compteur ++
+}
+```
+
+#### For
+
+Regardons à présent la boucle for. On va par courir le tableau tout comme on l'avait fait pour la boucle Foreach.
+
+```JavaScript
+for(let i=0; cols.length>i;i++) {
+	console.log(cols[i])
+}
+```
 
 ### Fonctions
 

@@ -1,6 +1,11 @@
 // js/app.js
 
 let cols = document.querySelectorAll(".col");
+
+for(let i=0; cols.length>i;i++) {
+	console.log(cols[i])
+}
+
 let a1 = document.querySelector('.a1');
 let a2 = document.querySelector('.a2');
 let a3 = document.querySelector('.a3');
