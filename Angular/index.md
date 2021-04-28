@@ -1,5 +1,8 @@
 # Cours Angular
 
+Voici mon support de cours pour Angular. N'hésitez pas à me faire vos retours sur ce [lien github](http://github.com/ldandoy/cours). Ou par mail: [ldandoy@overconsulting.net](mailto:ldandoy@overconsulting.net)
+
+Ce support est en cours d'écriture et évolue.
 ## Sommaire <!-- omit in toc -->
 
 - [Cours Angular](#cours-angular)
