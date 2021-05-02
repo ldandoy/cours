@@ -28,6 +28,10 @@ Ce support est en cours d'écriture et évolue.
     - [useState](#usestate)
     - [useEffect](#useeffect)
   - [Les formulaires dans React](#les-formulaires-dans-react)
+  - [Authentification](#authentification)
+    - [JWT (Json Web Token)](#jwt-json-web-token)
+    - [Localstorage et cookie problème](#localstorage-et-cookie-problème)
+    - [HTTP-only cookie](#http-only-cookie)
   - [Redux](#redux)
     - [Qu'est-ce que Redux](#quest-ce-que-redux)
     - [Installation](#installation)
@@ -282,6 +286,30 @@ export default ListContainer
 ### useEffect
 
 ## Les formulaires dans React
+
+## Authentification
+
+### JWT (Json Web Token)
+
+Sous PHP, la méthode principale pour gérer des sessions utilisateurs est l’utilisation de cookies de sessions appelés par défaut « PHPSESSID ». Lorsqu’un utilisateur se connecte sur une application, celle-ci demande la génération d’un identifiant de session au programme PHP présent sur le serveur Web. Celui-ci s’exécute et créé un code unique qu’il va stocker dans sa mémoire vive puis renvoyer au client grâce au header « Set-Cookie ». Les cookies étant conçus pour être automatiquement renvoyés dans chaque requête du navigateur vers le serveur, l’identifiant de session sera transmis systématiquement. Cette solution permet de gérer les cas classiques de connexion/déconnexion d’un utilisateur.
+
+Cependant, ce type de fonctionnement ne permet pas de partager facilement un même compte pour s’authentifier sur plusieurs plateformes distinctes et le serveur a l’obligation de stocker l’état et les informations des sessions dans sa mémoire vive.
+
+Les jetons JWT quant à eux sont “stateless”, cela signifie que les informations des sessions ouvertes ne sont pas stockées côté serveur. Outre le gain de mémoire que cela procure, les jetons JWT peuvent être utiles si vous souhaitez utiliser les mêmes comptes utilisateurs pour plusieurs applications. Il suffira que les applications utilisent la même clé privée pour signer et vérifier les jetons JWT. Les utilisateurs pourront ainsi s’authentifier une fois sur l’application hébergeant les comptes utilisateurs, puis ils pourront se connecter aux autres applications, celles-ci n’ayant qu’à vérifier la validité des jetons. 
+
+Mais en vrai comment ça marche ?
+
+Les « JSON Web Token » ou JWT sont des jetons générés par un serveur lors de l’authentification d’un utilisateur sur une application Web, et qui sont ensuite transmis au client.
+
+Ils seront renvoyés avec chaque requête HTTP au serveur, ce qui lui permettra d’identifier l’utilisateur.
+
+Pour ce faire, les informations contenues dans le jeton sont signées à l’aide d’une clé privée détenue par le serveur. Quand il recevra à nouveau le jeton, le serveur n’aura qu’à comparer la signature envoyée par le client et celle qu’il aura générée avec sa propre clé privée et à comparer les résultats. Si les signatures sont identiques, le jeton est valide. [En savoir plus](https://www.vaadata.com/blog/fr/jetons-jwt-et-securite-principes-et-cas-dutilisation/)
+
+### Localstorage et cookie problème 
+
+### HTTP-only cookie
+
+Mais qu'est ce que c'est un HTTP-only Cookie ? C'est un cookie, qui n'est accessible qu'en HTTP, et donc il ne peut jamais être lu en JavaScript, ce qui le protège des failles XSS.
 
 ## Redux
 
