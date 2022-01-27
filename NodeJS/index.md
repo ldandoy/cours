@@ -54,11 +54,11 @@ Qu'est-ce que nodeJS ? C'est un runtime JavaScript, utilisant le moteur v8 de ch
 
 un runtime est un logiciel responsable de l'exécution des programmes informatiques écrits dans un language donné. [En savoir plus](https://fr.wikipedia.org/wiki/Environnement_d%27ex%C3%A9cution)
 
-Mais pour expliquer les choses de façon plus simple, en gros, vous allez écrire un programme en JavaScript par exemple, il faudra donc un programme capable de lire le Javacript, et d'executer les commandes que vous aurez écrit dedans. NodeJS est donc se programme, et il utilise le même moteur pour executez les commandes que le navigateur chrome.
+Mais pour expliquer les choses de façon plus simple, en gros, vous allez écrire un programme en JavaScript par exemple, il faudra un programme capable de lire le Javacript, et d'executer les commandes que vous aurez écrit dedans. NodeJS est donc ce programme. C'est le même que celui utilisé par le navigateur chrome.
 
 ## Navigateur vs Server
 
-Mais alors si on a chrome qui fait déjà le travail, pourquoi NodeJS ? Et bien c'est assez simple, parfois, vous voulez écrire du code JavaScript, et l'excuter hors d'un navigateur (on parlera de côté client), comme serveur par exemple.
+Mais alors si on a chrome qui fait déjà le travail, pourquoi NodeJS ? Et bien c'est assez simple, parfois, vous voulez écrire un programme qui n'a pas besoin de renvoyer du HTML ou du CSSS. Vous pouvez l'écrire en PHP, en ruby ou ecnore en JavaScript. et l'excuter hors d'un navigateur (si c'était dans le navigateur, on parlerait de Javascript côté client), comme sur le serveur par exemple, ou en ligne de commande sur votre ordinateur. On parlera alors de Javascript executer côté serveur.
 
 On reviendra sur cette notion de client serveur, mais pour faire court, une personne qui veut accêter à une ressource sur internet, sera appeler cliente, et elle deva utiliser un client HTTP, pour demander une page d'un site ou une autre. Et cette demande est faite à un serveur qui lui sera chargé de lui répondre, par la page demander, on parle alors de server HTTP.
 
@@ -66,15 +66,15 @@ La particularité du JS (JavaScript) est qu'il peut s'éxecuter côté client et
 
 ## Installation
 
-Pour faire l'installation, vous pouvez le télécharger à l'adresse suivante [http://nodejs.org](http://nodejs.org), il vous suffit de double cliquer sur l'installateur.
+Pour faire l'installation, vous pouvez le télécharger l'installateur à l'adresse suivante [http://nodejs.org](http://nodejs.org), il vous suffit de double cliquer sur l'installateur (en sélectionnant celui correspondant à voter système d'exploitation).
 
 ## Premiers pas
 
 ### Hello World
 
-Comme dans tout bon cours de programmation, il faut commencer par le Hello world. Allez partont pour notre premier programme.
+Comme dans tout bon cours de programmation, il faut commencer par le Hello world. Allez commençons notre premier programme en Javascript.
 
-Dans un premier temps, il faudra ouvrir votre éditeur de texte préféré ([VScode](https://code.visualstudio.com/), [SublimText](https://www.sublimetext.com/), etc...). Une fois installé, créer un dossier dans votre répertoire personnel nommé cours-nodejs. Ajouter ce répertoire à votre éditeur de texte (IDE).
+Dans un premier temps, il faudra ouvrir votre éditeur de texte préféré ([VScode](https://code.visualstudio.com/), [SublimText](https://www.sublimetext.com/), etc...). Une fois installé, créer un dossier dans votre répertoire personnel nommé cours-nodejs. Ajouter ce répertoire à votre éditeur de texte (IDE). Si vous êtes sous linux, ou si vous utilisez le terminal, ce que je vous recommande grandement:
 
 ```bash
 ldandoy@host ~
@@ -83,7 +83,7 @@ $ cd cours-nodejs
 $ code .
 ```
 
- puis créez le fichier helloworld.js. Copiez le code suivant dedans.
+Une fois Visual Studio Code ouvert, créez le fichier helloworld.js. Copiez le code suivant dedans.
 
 ```Javascript
 // ~/cours-nodejs/helloworld.js
@@ -91,7 +91,7 @@ $ code .
 console.log('Hello World !')
 ```
 
-Une fois créé, vous pouvez lancer votre terminal, et vous rendre dans le dossier que vous venez de créer. Puis, il va falloir executer le programme javascript helloworld.js.
+Une fois créé, vous pouvez ouvrir votre terminal, et vous rendre dans le dossier que vous venez de créer. Puis, il va falloir executer le programme javascript helloworld.js.
 
 ```bash
 ldandoy@host ~/cours-nodejs 
@@ -102,7 +102,7 @@ Vous devriez voir Hello World ! s'afficher dans votre terminal. On dit que le fi
 
 ### Les variables
 
-Comme dans tout programme, on a besoin de pouvoir stocker et garder des informations tout au long de son programme. Voici les différents type qui existent, avec un exemple. Je vous invite a créer un nouveau fichier, pour en garder trace.
+Ddans tout programme, on a besoin de pouvoir stocker et garder des informations tout au long de son programme. Voici les différents type de variable qui existent, avec un exemple. Je vous invite a créer un nouveau fichier, pour en garder trace.
 
 Pour créer une variable, il y a deux ou trois possibilité (let, const et var). var est l'ancienne notation, qui existe encore, mais qui est de moins en moins utilisé. attention, const permet de créer une constante qui bien sûr ne peut pas être modifié une fois créé.
 
@@ -116,7 +116,7 @@ let tableau = [12, 45, "test", "toto"] // Variable de type tableau
 let object  = { id: 12, nom: "DANDOY", prenom: "Loïc" } // Variable de type objet, qui a trois attributs (id, nom et prenom)
 ```
 
-Il existe aussi des variables prédéfinit, tel que __direname
+Il existe aussi des constantes prédéfinit, tel que __direname
 __filename. Pour voir à quoi elle correspondent, vous pouvez ajouter les lignes suivantes à votre fichier typevariable.js
 
 ```Javascript
@@ -126,7 +126,7 @@ console.log("Path du dossier du fichier encours d'execution: ", __direname)
 console.log("Path complète du fichier encours d'execution: ", __filename)
 ```
 
-Vous vous demandez peut-être ce que signigie Path d'un fichier ou d'un dossier (appelé aussi répertoire). C'est une variable qui contient le l'endroit où se trouve le fichier ou le dossier dans l'ordinateur. Cela permet de retrouver le fichier, ou le dossier pour par exemple écrire un fichier dedans.
+Vous vous demandez peut-être ce que signigie Path d'un fichier ou d'un dossier (appelé aussi répertoire). C'est une variable qui contient le l'endroit où se trouve le fichier ou le dossier dans votre ordinateur.
 
 ### Les structures de tests
 
@@ -255,11 +255,13 @@ Merle
 [nodemon] clean exit - waiting for changes before restart
 ```
 
+Comme vous pouvez le voir, une fois executer nodemon attend, et si vous changer votre fichier, il sera tout de suite relancer et réexcuter, pour développer, c'est partique cela évite de redemarrer à chaque fois. contrairement à node, qui lui ne réexecute votre code que si vous le relancez.
+
 ## Express: Infrastructure Web minimaliste, souple et rapide pour Node.js
 
 ### Qu'est-ce qu'une API REST
 
-Une API REST (également appelée API RESTful) est une interface de programmation d'application qui respecte les contraintes de l'architecture REST (pour « Representational State Transfer »).
+Une API REST (également appelée API RESTfull) est une interface de programmation d'application qui respecte les contraintes de l'architecture REST (pour « Representational State Transfer »).
 
 Une API, ou interface de programmation d'application, est un ensemble de définitions et de protocoles qui facilite la création et l'intégration de logiciels d'applications. Elle est parfois considérée comme un contrat entre un fournisseur d'informations et un utilisateur d'informations, qui permet de définir le contenu demandé au consommateur (l'appel) et le contenu demandé au producteur (la réponse). Par exemple, l'API d'un service de météo peut demander à l'utilisateur de fournir un code postal et au producteur de renvoyer une réponse en deux parties : la première concernant la température maximale et la seconde la température minimale. [Pour en savoir plus](https://www.redhat.com/fr/topics/api/what-is-a-rest-api).
 
@@ -385,6 +387,10 @@ app.listen(port, () => {
 #### PostMan
 
 Les navigateurs normaux (chrome, firefox...) ne permettent de faire que des requètes GET et POST. Il nous faut donc un outils qui va nous permettre de créer des requètes PUT, DELETE... Et ainsi de suite. Pour l'installer, il faut vous connecter à [https://www.postman.com/](https://www.postman.com/)
+
+#### Thunderclient
+
+Mais si vous ne voulez pas installer de logiciel en plus, alors vous pouvez tout simplement installer l'extention Visual Studio Code: thunderClient. Qui vous permettra de faire vos requetes directement dans VSCode. 
 
 #### GET request
 
@@ -688,7 +694,7 @@ app.listen(port, () => {
 
 ### Les modules Cors et Helmet
 
-Pour la suite nous allons installer plusieurs modules en même temps. Le modules cors, qui va nous permettre de pouvoir appeler l'api à partir d'une application web installer sur notre ordianteur (En ReactJS ou Angular par exemple). en suite nous installerons helmet, qui rajoute de la sécurité, en cachant la version de NodeJs qu'on utilise par exemple. En gros cette librairie modifie les headers des requètes pour cache les informations sur notre serveur.
+Pour la suite nous allons installer plusieurs modules en même temps. Le modules cors, qui va nous permettre de pouvoir appeler l'api à partir d'une application web installer sur notre ordianteur (En ReactJS ou Angular par exemple). en suite nous installerons helmet, qui rajoute de la sécurité, en cachant la version de NodeJs qu'on utilise par exemple. En gros cette librairie modifie les headers des requètes pour cachre les informations sur notre serveur.
 
 ```bash
 ldandoy@host ~/cours-nodejs/server
@@ -718,7 +724,7 @@ app.use(express.json());
 
 ### Organiser son code en plusieurs fichiers
 
-Pour organsier son code, le mieux est de mettre les routes d'un côté, pour ne pas tout avoir dans le même fichier. Par exemple si vous avez une api pour des todos, et une pour des catégory, il faudra créer un dossier routes et créer deux fichiers dedans l'un todoRoutes.js et l'autre catRoutes.js.
+Vous l'avez compris, on ne veut pas tout mettre dans le même fichier. Alors pour organsier son code, le mieux est de mettre les routes d'un côté, pour ne pas tout avoir dans le même fichier. Par exemple si vous avez une api pour des todos, et une pour des catégory, il faudra créer un dossier routes et créer deux fichiers dedans l'un todoRoutes.js et l'autre catRoutes.js.
 
 Maintenant appliquons ce que l'on vient de dire ici.
 
@@ -833,9 +839,11 @@ app.listen(port, () => {
 })
 ```
 
-### Middleware
+### Middlewares
 
 #### Définition et rôle
+
+Un middleware est une fonction que l'on va appeler dans notre chaine de traitement. Par exemple, on va avoir la fonction qui va gérer les routes, puis une autre fonction pourrait s'occuper des erreurs, et encore une autre s'executer s'il n'y aucune route de trouvé.
 
 #### Mise en place de deux middlewares
 
@@ -1172,9 +1180,9 @@ Pour en savoir plus [Voir: mongoose](https://mongoosejs.com/)
 
 A venir: [Voir: sequelize](https://sequelize.org/)
 
-## Passons à un cas réel
+## Ajoutons une nouvelle API
 
-Dans ce cas réel nous allons créer une API pour les produits. Voici la scruture d'un produit
+Dans ce cas nous allons créer une API pour les produits. Voici la scruture d'un produit
 
 ```Json
 {
